@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Encuentra tu Próximo Destino Económico!</title>
+    <style>
+        :root {
+            --gradient-primary: linear-gradient(135deg, #ff4e50, #f9d423);
+            --gradient-secondary: linear-gradient(135deg, #00c6ff, #0072ff);
+            --primary-color: #ff4e50;
+            --accent-color: #0072ff;
+            --background-overlay: rgba(15, 23, 42, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 35px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background-color: #fff;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(255, 78, 80, 0.15);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button[type="submit"] {
+            background: var(--gradient-primary);
+            color: white;
+            flex: 2;
+            box-shadow: 0 4px 15px rgba(255, 78, 80, 0.4);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 78, 80, 0.6);
+        }
+
+        button.btn-reset {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+            flex: 1;
+            border: 2px solid #e2e8f0;
+        }
+
+        button.btn-reset:hover {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .result-card {
+            margin-top: 30px;
+            border-radius: 18px;
+            background-color: #ffffff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            text-align: left;
+            display: none;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dest-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        .result-body {
+            padding: 20px;
+        }
+
+        .result-card h2 {
+            font-size: 1.6rem;
+            color: #0f172a;
+            margin-bottom: 15px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .temp-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .temp-box {
+            background: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #f1f5f9;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex: 1;
+            text-align: center;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .temp-box.min-box span { color: #3b82f6; }
+        .temp-box.max-box span { color: #ef4444; }
+
+        .temp-box span {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .reason {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-color);
+            font-weight: 500;
+        }
+    </style>
+    <!-- Importación de fuente moderna desde Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <h1>¡A Viajar!</h1>
+        <p class="subtitle">Descubre destinos increíbles y económicos mes a mes</p>
+        
+        <form id="search-form">
+            <div class="form-group">
+                <label for="month-select">¿En qué mes deseas viajar?</label>
+                <select id="month-select" required>
+                    <option value="" disabled selected> Selecciona un mes de aventura...</option>
+                    <option value="enero">Enero</option>
+                    <option value="febrero">Febrero</option>
+                    <option value="marzo">Marzo</option>
+                    <option value="abril">Abril</option>
+                    <option value="mayo">Mayo</option>
+                    <option value="junio">Junio</option>
+                    <option value="julio">Julio</option>
+                    <option value="agosto">Agosto</option>
+                    <option value="septiembre">Septiembre</option>
+                    <option value="octubre">Octubre</option>
+                    <option value="noviembre">Noviembre</option>
+                    <option value="diciembre">Diciembre</option>
+                </select>
+            </div>
+            <div class="btn-container">
+                <button type="submit">🔍 Buscar Destino</button>
+                <button type="button" class="btn-reset" id="reset-btn">Limpiar</button>
+            </div>
+        </form>
+
+        <div class="result-card" id="result-card">
+            <img src="" alt="Destino recomendado" class="dest-image" id="res-img">
+            <div class="result-body">
+                <h2 id="res-destino">📍 Destino</h2>
+                <div class="temp-container">
+                    <div class="temp-box min-box">
+                        ❄️ Mínima
+                        <span id="res-min">--</span>
+                    </div>
+                    <div class="temp-box max-box">
+                        🔥 Máxima
+                        <span id="res-max">--</span>
+                    </div>
+                </div>
+                <div class="reason" id="res-reason">
+                    Razón de recomendación.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos expandida con URLs estáticas de imágenes espectaculares de Unsplash
+        const destinosData = {
+            enero: { 
+                destino: "Guatemala", min: "55°F", max: "75°F", 
+                razon: "Clima fresco y precios moderados después de Navidad.",
+                img: "https://images.unsplash.com/photo-1544085311-11a028465b03?w=600&auto=format&fit=crop&q=80"
+            },
+            febrero: { 
+                destino: "Costa Rica", min: "66°F", max: "84°F", 
+                razon: "Temporada seca con tarifas todavía razonables.",
+                img: "https://images.unsplash.com/photo-1523438097204-5747e932dc00?w=600&auto=format&fit=crop&q=80"
+            },
+            marzo: { 
+                destino: "Colombia (Medellín)", min: "62°F", max: "80°F", 
+                razon: "Excelente clima y bajo costo de hospedaje y comida.",
+                img: "https://images.unsplash.com/photo-1533228892549-7812de53fb27?w=600&auto=format&fit=crop&q=80"
+            },
+            abril: { 
+                destino: "Perú", min: "48°F", max: "68°F", 
+                razon: "Inicio de temporada seca, ideal para conocer Cusco y Machu Picchu.",
+                img: "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&auto=format&fit=crop&q=80"
+            },
+            mayo: { 
+                destino: "Ecuador", min: "50°F", max: "70°F", 
+                razon: "Menos turistas y precios económicos.",
+                img: "https://images.unsplash.com/photo-1579606038812-a7201c801f97?w=600&auto=format&fit=crop&q=80"
+            },
+            junio: { 
+                destino: "Portugal", min: "61°F", max: "79°F", 
+                razon: "Antes del pico de verano, excelentes ofertas.",
+                img: "https://images.unsplash.com/photo-1509840141075-e5e346884def?w=600&auto=format&fit=crop&q=80"
+            },
+            julio: { 
+                destino: "Bolivia", min: "35°F", max: "65°F", 
+                razon: "Temporada seca con costos bajos.",
+                img: "https://images.unsplash.com/photo-1463131308058-938888092a43?w=600&auto=format&fit=crop&q=80"
+            },
+            agosto: { 
+                destino: "Escocia", min: "52°F", max: "67°F", 
+                razon: "Temperaturas agradables y días largos.",
+                img: "https://images.unsplash.com/photo-1529963183134-61a90db47eaf?w=600&auto=format&fit=crop&q=80"
+            },
+            septiembre: { 
+                destino: "España (Madrid y norte de España)", min: "60°F", max: "82°F", 
+                razon: "Menos turistas y clima excelente.",
+                img: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&auto=format&fit=crop&q=80"
+            },
+            octubre: { 
+                destino: "Turquía", min: "55°F", max: "75°F", 
+                razon: "Temperatura agradable y precios más bajos.",
+                img: "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=600&auto=format&fit=crop&q=80"
+            },
+            noviembre: { 
+                destino: "Ecuador", min: "48°F", max: "69°F", 
+                razon: "Excelente relación calidad-precio y poca afluencia turística.",
+                img: "https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=600&auto=format&fit=crop&q=80"
+            },
+            diciembre: { 
+                destino: "México", min: "58°F", max: "80°F", 
+                razon: "Festividades, clima agradable y muchas opciones económicas fuera de las zonas más turísticas.",
+                img: "https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=600&auto=format&fit=crop&q=80"
+            }
+        };
+
+        const form = document.getElementById('search-form');
+        const resultCard = document.getElementById('result-card');
+        const resDestino = document.getElementById('res-destino');
+        const resMin = document.getElementById('res-min');
+        const resMax = document.getElementById('res-max');
+        const resReason = document.getElementById('res-reason');
+        const resImg = document.getElementById('res-img');
+        const resetBtn = document.getElementById('reset-btn');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const selectedMonth = document.getElementById('month-select').value;
+            const data = destinosData[selectedMonth];
+
+            if (data) {
+                // Actualizar textos e imagen
+                resDestino.innerHTML = `📍 ${data.destino}`;
+                resMin.textContent = data.min;
+                resMax.textContent = data.max;
+                resReason.textContent = data.razon;
+                resImg.src = data.img;
+                resImg.alt = `Hermosa vista de ${data.destino}`;
+
+                // Mostrar la tarjeta con la animación
+                resultCard.style.display = 'block';
+            }
+        });
+
+        resetBtn.addEventListener('click', function() {
+            form.reset();
+            resultCard.style.display = 'none';
+            resImg.src = ""; // Limpia la imagen cargada
+        });
+    </script>
+</body>
+</html>
